@@ -12,11 +12,16 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { PasswordField } from "@/components/ui/password-input";
+import { pocketbaseClient } from "@/lib/pocketbase";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 
 const formSchema = z.object({
@@ -33,10 +38,20 @@ const formSchema = z.object({
     .min(1, "La contraseña no puede estar vacía.")
     .max(50, "La contraseña no puede tener más de 50 caracteres."),
 });
+
 export function LoginForm({
   className,
+  onClose, // Prop para cerrar el diálogo
+  onLogin, // Nueva prop para notificar el inicio de sesión
   ...props
-}: React.ComponentProps<"div">) {
+}: React.ComponentProps<"div"> & {
+  onClose: () => void;
+  onLogin: () => void;
+}) {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
   const form = useForm<z.infer<typeof formSchema>>({
     mode: "onSubmit",
     resolver: zodResolver(formSchema),
@@ -47,9 +62,38 @@ export function LoginForm({
     shouldFocusError: false,
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  useEffect(() => {
+    const checkAuth = async () => {
+      const isValid = await pocketbaseClient.validateAuth();
+      setIsAuthenticated(isValid);
+      if (isValid) router.push("/");
+    };
+
+    checkAuth();
+  }, [router]);
+
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    setIsLoading(true);
+    try {
+      await pocketbaseClient.login(values.username, values.password);
+      toast.success("Sesión iniciada correctamente");
+
+      // Cerrar el diálogo de login
+      onClose();
+
+      // Notificar al componente padre que el usuario ha iniciado sesión
+      onLogin();
+
+      // Redirigir a la página principal
+      router.push("/");
+    } catch (error) {
+      toast.error("Credenciales inválidas o error de autenticación");
+    } finally {
+      setIsLoading(false);
+    }
   }
+
+  if (isAuthenticated) return null;
 
   return (
     <div className={cn("flex flex-col gap-6 ", className)} {...props}>
@@ -90,7 +134,10 @@ export function LoginForm({
                   }
                 />
 
-                <Button type="submit" className="w-full">
+                <Button type="submit" className="w-full" disabled={isLoading}>
+                  {isLoading ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : null}
                   Iniciar sesión
                 </Button>
               </div>
