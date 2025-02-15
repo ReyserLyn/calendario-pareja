@@ -43,6 +43,14 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          <div
+            className="absolute inset-0 -z-10 h-full w-full transition-colors duration-300"
+            style={{
+              backgroundImage:
+                "radial-gradient(var(--background-dot-color) 1px, transparent 1px)",
+              backgroundSize: "16px 16px",
+            }}
+          ></div>
           {children}
           <Toaster position="bottom-right" expand={false} richColors />
         </ThemeProvider>
