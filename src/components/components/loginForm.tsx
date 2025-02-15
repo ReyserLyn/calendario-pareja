@@ -79,9 +79,7 @@ export function LoginForm({
       toast.success("Sesión iniciada correctamente");
 
       onClose();
-
       onLogin();
-
       router.push("/");
     } catch {
       toast.error("Credenciales inválidas o error de autenticación");
@@ -127,7 +125,9 @@ export function LoginForm({
 
                 <PasswordField
                   description={
-                    <Link href="reset">Olvidaste tu contraseña?</Link>
+                    <Link href="/reset" onClick={onClose}>
+                      Olvidaste tu contraseña?
+                    </Link> // Enlace a la página de reset
                   }
                 />
 
