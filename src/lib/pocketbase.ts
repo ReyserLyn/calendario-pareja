@@ -35,7 +35,7 @@ class PocketBaseClient {
     } catch (error) {
       console.error("Error en login:", error);
       this.logout();
-      throw new Error("Usuario o contraseña incorrectos");
+      throw new Error("Usuario o contraseña incorrectos: " + error);
     }
   }
 
@@ -84,7 +84,7 @@ class PocketBaseClient {
         username: data.username?.toLowerCase(),
       });
     } catch (error) {
-      throw new Error("Error al crear el usuario");
+      throw new Error("Error al crear el usuario: " + error);
     }
   }
 
@@ -101,7 +101,8 @@ class PocketBaseClient {
         username: data.username?.toLowerCase(),
       });
     } catch (error) {
-      throw new Error("Error al actualizar el usuario");
+      console.error("Error al actualizar el usuario:", error);
+      throw new Error("Error al actualizar el usuario: " + error);
     }
   }
 }

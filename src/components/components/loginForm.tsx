@@ -41,8 +41,8 @@ const formSchema = z.object({
 
 export function LoginForm({
   className,
-  onClose, // Prop para cerrar el diálogo
-  onLogin, // Nueva prop para notificar el inicio de sesión
+  onClose,
+  onLogin,
   ...props
 }: React.ComponentProps<"div"> & {
   onClose: () => void;
@@ -78,15 +78,12 @@ export function LoginForm({
       await pocketbaseClient.login(values.username, values.password);
       toast.success("Sesión iniciada correctamente");
 
-      // Cerrar el diálogo de login
       onClose();
 
-      // Notificar al componente padre que el usuario ha iniciado sesión
       onLogin();
 
-      // Redirigir a la página principal
       router.push("/");
-    } catch (error) {
+    } catch {
       toast.error("Credenciales inválidas o error de autenticación");
     } finally {
       setIsLoading(false);
