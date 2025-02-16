@@ -1,32 +1,34 @@
+// components/components/navbar.tsx
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { ToggleTheme } from "@/components/ui/toogle-theme";
+import { useEditing } from "@/context/EditingContext"; // Importar el contexto
 import { pocketbaseClient } from "@/lib/pocketbase";
 import { cn } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FaEdit, FaSave, FaTimes } from "react-icons/fa";
 import { LoginForm } from "./loginForm";
 import { UserDropdown } from "./userDropDown";
 
+declare global {
+  interface Window {
+    saveCalendarChanges: () => Promise<void>;
+  }
+}
+
 export default function Navbar() {
+  const pathname = usePathname();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [isEditing, setIsEditing] = useState(false);
-  const [temporalChanges, setTemporalChanges] = useState<Record<
-    string,
-    any
-  > | null>(null);
+
+  // Usar el contexto
+  const { isEditing, setIsEditing } = useEditing();
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -44,6 +46,39 @@ export default function Navbar() {
     checkAuth();
   }, []);
 
+  // Manejar cierre de sesión
+  const handleLogout = () => {
+    pocketbaseClient.logout();
+    setIsAuthenticated(false);
+  };
+
+  // Manejar inicio de sesión exitoso
+  const handleLogin = () => {
+    setIsAuthenticated(true);
+    setIsDialogOpen(false); // Cerrar el diálogo después del login
+  };
+
+  // Guardar cambios en el calendario
+  const handleSaveChanges = async () => {
+    try {
+      await window.saveCalendarChanges();
+      setIsEditing(false);
+    } catch (error) {
+      console.error("Error saving changes:", error);
+    }
+  };
+
+  // Cancelar cambios en el calendario
+  const handleCancelChanges = () => {
+    setIsEditing(false);
+  };
+
+  // Entrar en modo edición
+  const handleEditClick = () => {
+    setIsEditing(true);
+  };
+
+  // Mostrar loader mientras se verifica la autenticación
   if (isLoading) {
     return (
       <header className="absolute inset-x-0 top-0 z-50">
@@ -63,30 +98,6 @@ export default function Navbar() {
     );
   }
 
-  const handleLogout = () => {
-    setIsAuthenticated(false);
-  };
-
-  const handleLogin = () => {
-    setIsAuthenticated(true);
-  };
-
-  const handleSaveChanges = () => {
-    console.log("Guardando cambios:", temporalChanges);
-    setIsEditing(false);
-    setTemporalChanges(null);
-  };
-
-  const handleCancelChanges = () => {
-    console.log("Cancelando cambios");
-    setIsEditing(false);
-    setTemporalChanges(null);
-  };
-  const handleEditClick = () => {
-    console.log("Entrando en modo edición");
-    setIsEditing(true);
-    setTemporalChanges({});
-  };
   return (
     <header className="absolute inset-x-0 top-0 z-50">
       <div className="container mx-auto px-6 py-4 flex items-center justify-between">
@@ -102,7 +113,6 @@ export default function Navbar() {
           {isAuthenticated ? (
             <>
               <UserDropdown onLogout={handleLogout} />
-
               <div className="flex items-center gap-2">
                 <Button
                   variant={isEditing ? "default" : "outline"}
@@ -150,25 +160,14 @@ export default function Navbar() {
               <DialogTrigger asChild>
                 <Button variant="outline">Iniciar sesión</Button>
               </DialogTrigger>
-              <DialogContent
-                className="max-w-3xl"
-                onOpenAutoFocus={(e) => e.preventDefault()}
-                hideClose
-              >
-                <DialogTitle className="sr-only">Iniciar sesión</DialogTitle>
-
+              <DialogContent className="max-w-3xl">
                 <LoginForm
                   onClose={() => setIsDialogOpen(false)}
                   onLogin={handleLogin}
                 />
-
-                <DialogDescription className="sr-only">
-                  Iniciar sesión en calendario parejas
-                </DialogDescription>
               </DialogContent>
             </Dialog>
           )}
-
           <ToggleTheme />
         </div>
       </div>

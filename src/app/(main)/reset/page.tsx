@@ -1,3 +1,7 @@
-export default function ResetPage() {
-  return <div>hola mundo esto es la pagina de reset</div>;
+export default function Home() {
+  return (
+    <main className="flex flex-col min-h-screen justify-between pt-20">
+      <div>hola mundo</div>
+    </main>
+  );
 }
