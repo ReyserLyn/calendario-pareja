@@ -1,4 +1,3 @@
-// app/(main)/page.tsx
 "use client";
 
 import { ImageUploader } from "@/components/components/image-uploader";
@@ -42,7 +41,7 @@ export default function Home() {
   const [isLoadingPhotos, setIsLoadingPhotos] = useState(true);
 
   // Usar el contexto
-  const { isEditing } = useEditing();
+  const { isEditing, setIsEditing } = useEditing();
 
   // Obtener el sessionId al montar el componente
   useEffect(() => {
@@ -146,6 +145,12 @@ export default function Home() {
     }
   };
 
+  const handleCancelChanges = () => {
+    setTemporalPhotos({} as Record<PhotosMonthOptions, string>); // Limpiar fotos temporales
+    setIsEditing(false); // Salir del modo de edición
+    toast.info("Cambios cancelados");
+  };
+
   return (
     <div className="flex flex-col items-center justify-center p-4 sm:p-8">
       <h1 className="font-dancing text-3xl sm:text-4xl font-bold text-center mb-4 sm:mb-12 mt-14 md:mt-10">
@@ -221,12 +226,20 @@ export default function Home() {
       )}
 
       {isEditing && Object.keys(temporalPhotos).length > 0 && (
-        <button
-          onClick={handleSaveChanges}
-          className="fixed bottom-8 right-8 bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg"
-        >
-          Guardar Cambios
-        </button>
+        <div className="fixed bottom-8 right-8 flex gap-4">
+          <button
+            onClick={handleSaveChanges}
+            className="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg"
+          >
+            Guardar Cambios
+          </button>
+          <button
+            onClick={handleCancelChanges}
+            className="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg shadow-lg"
+          >
+            Cancelar
+          </button>
+        </div>
       )}
     </div>
   );

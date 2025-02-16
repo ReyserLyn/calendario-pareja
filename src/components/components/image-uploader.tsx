@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
 import {
   Form,
@@ -8,7 +7,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { pocketbaseClient } from "@/lib/pocketbase";
 import { PhotosMonthOptions } from "@/types/pocketbase-types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ImagePlus } from "lucide-react";
@@ -30,7 +28,6 @@ export const ImageUploader: React.FC<{
 
   const formSchema = z.object({
     image: z
-      //Rest of validations done via react dropzone
       .instanceof(File)
       .refine((file) => file.size !== 0, "Please upload an image"),
   });
@@ -69,18 +66,18 @@ export const ImageUploader: React.FC<{
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const record = await pocketbaseClient.uploadPhoto(
-        sessionId,
-        month,
-        values.image
-      );
-      const imageUrl = pocketbaseClient.pb.files.getUrl(record, record.photo);
+      // Convertir la imagen a una URL temporal
+      const imageUrl = URL.createObjectURL(values.image);
 
+      // Llamar a la función onUpload para almacenar la imagen temporalmente
       onUpload(month, imageUrl);
-      toast.success("Imagen actualizada correctamente");
+
+      // Cerrar el modal
       onSuccess();
+
+      toast.success("Imagen cargada temporalmente");
     } catch (error) {
-      toast.error("Error al subir la imagen");
+      toast.error("Error al cargar la imagen");
       console.error("Upload error:", error);
     }
   };

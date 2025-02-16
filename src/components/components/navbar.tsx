@@ -11,7 +11,7 @@ import { Loader2 } from "lucide-react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { FaEdit, FaSave, FaTimes } from "react-icons/fa";
+import { FaEdit } from "react-icons/fa";
 import { LoginForm } from "./loginForm";
 import { UserDropdown } from "./userDropDown";
 
@@ -56,21 +56,6 @@ export default function Navbar() {
   const handleLogin = () => {
     setIsAuthenticated(true);
     setIsDialogOpen(false); // Cerrar el diálogo después del login
-  };
-
-  // Guardar cambios en el calendario
-  const handleSaveChanges = async () => {
-    try {
-      await window.saveCalendarChanges();
-      setIsEditing(false);
-    } catch (error) {
-      console.error("Error saving changes:", error);
-    }
-  };
-
-  // Cancelar cambios en el calendario
-  const handleCancelChanges = () => {
-    setIsEditing(false);
   };
 
   // Entrar en modo edición
@@ -121,38 +106,11 @@ export default function Navbar() {
                     isEditing && "bg-green-600 hover:bg-green-700 text-white"
                   )}
                   size="sm"
-                  onClick={() => {
-                    if (isEditing) {
-                      handleSaveChanges();
-                    } else {
-                      handleEditClick();
-                    }
-                  }}
+                  onClick={handleEditClick}
                 >
-                  {isEditing ? (
-                    <>
-                      <FaSave className="h-5 w-5" />
-                      <span className="hidden sm:inline">Guardar</span>
-                    </>
-                  ) : (
-                    <>
-                      <FaEdit className="h-5 w-5" />
-                      <span className="hidden sm:inline">Editar</span>
-                    </>
-                  )}
+                  <FaEdit className="h-5 w-5" />
+                  <span className="hidden sm:inline">Editar</span>
                 </Button>
-
-                {isEditing && (
-                  <Button
-                    variant="destructive"
-                    onClick={handleCancelChanges}
-                    className="gap-2"
-                    size="sm"
-                  >
-                    <FaTimes className="h-4 w-4" />
-                    <span className="hidden sm:inline">Cancelar</span>
-                  </Button>
-                )}
               </div>
             </>
           ) : (
