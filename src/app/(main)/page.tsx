@@ -89,7 +89,9 @@ export default function Home() {
   }, [sessionId]);
 
   const handleMonthClick = (month: PhotosMonthOptions) => {
-    isEditing && setSelectedMonth(month);
+    if (isEditing) {
+      setSelectedMonth(month);
+    }
   };
 
   const handleUploadSuccess = (month: PhotosMonthOptions, imageUrl: string) => {

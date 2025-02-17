@@ -9,7 +9,6 @@ import { pocketbaseClient } from "@/lib/pocketbase";
 import { cn } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FaEdit } from "react-icons/fa";
 import { LoginForm } from "./loginForm";
@@ -22,7 +21,6 @@ declare global {
 }
 
 export default function Navbar() {
-  const pathname = usePathname();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);

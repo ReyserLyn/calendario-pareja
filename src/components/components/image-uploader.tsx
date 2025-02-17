@@ -10,6 +10,7 @@ import {
 import { PhotosMonthOptions } from "@/types/pocketbase-types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ImagePlus } from "lucide-react";
+import Image from "next/image"; // Importamos el componente Image de Next.js
 import React from "react";
 import { useDropzone } from "react-dropzone";
 import { useForm } from "react-hook-form";
@@ -23,15 +24,13 @@ export const ImageUploader: React.FC<{
   month: PhotosMonthOptions;
   onSuccess: () => void;
   onUpload: (month: PhotosMonthOptions, imageUrl: string) => void;
-}> = ({ sessionId, month, onSuccess, onUpload }) => {
+}> = ({ month, onSuccess, onUpload }) => {
   const [preview, setPreview] = React.useState<string | ArrayBuffer | null>("");
-
   const formSchema = z.object({
     image: z
       .instanceof(File)
       .refine((file) => file.size !== 0, "Please upload an image"),
   });
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     mode: "onBlur",
@@ -48,7 +47,7 @@ export const ImageUploader: React.FC<{
         reader.readAsDataURL(acceptedFiles[0]);
         form.setValue("image", acceptedFiles[0]);
         form.clearErrors("image");
-      } catch (error) {
+      } catch {
         setPreview(null);
         form.resetField("image");
       }
@@ -68,13 +67,10 @@ export const ImageUploader: React.FC<{
     try {
       // Convertir la imagen a una URL temporal
       const imageUrl = URL.createObjectURL(values.image);
-
       // Llamar a la función onUpload para almacenar la imagen temporalmente
       onUpload(month, imageUrl);
-
       // Cerrar el modal
       onSuccess();
-
       toast.success("Imagen cargada temporalmente");
     } catch (error) {
       toast.error("Error al cargar la imagen");
@@ -111,11 +107,14 @@ export const ImageUploader: React.FC<{
                   {...getRootProps()}
                   className="mx-auto flex cursor-pointer flex-col items-center justify-center gap-y-2 rounded-lg border border-foreground p-8 shadow-sm shadow-foreground"
                 >
-                  {preview && (
-                    <img
-                      src={preview as string}
+                  {preview && typeof preview === "string" && (
+                    <Image
+                      src={preview}
                       alt="Uploaded image"
+                      width={400} // Ancho máximo
+                      height={400} // Altura máxima
                       className="max-h-[400px] rounded-lg"
+                      unoptimized // Desactiva la optimización porque es una imagen local/dinámica
                     />
                   )}
                   <ImagePlus
