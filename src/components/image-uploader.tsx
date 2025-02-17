@@ -10,7 +10,7 @@ import {
 import { PhotosMonthOptions } from "@/types/pocketbase-types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ImagePlus } from "lucide-react";
-import Image from "next/image"; // Importamos el componente Image de Next.js
+import Image from "next/image";
 import React from "react";
 import { useDropzone } from "react-dropzone";
 import { useForm } from "react-hook-form";
@@ -22,15 +22,18 @@ import { Input } from "./ui/input";
 export const ImageUploader: React.FC<{
   sessionId: string;
   month: PhotosMonthOptions;
-  onSuccess: () => void;
-  onUpload: (month: PhotosMonthOptions, imageUrl: string) => void;
-}> = ({ month, onSuccess, onUpload }) => {
+  onSuccess: (imageUrl: string) => void;
+  isOpen?: boolean;
+  setIsOpen?: () => void;
+}> = ({ sessionId, month, onSuccess, isOpen, setIsOpen }) => {
   const [preview, setPreview] = React.useState<string | ArrayBuffer | null>("");
+
   const formSchema = z.object({
     image: z
       .instanceof(File)
       .refine((file) => file.size !== 0, "Please upload an image"),
   });
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     mode: "onBlur",
@@ -65,12 +68,9 @@ export const ImageUploader: React.FC<{
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      // Convertir la imagen a una URL temporal
       const imageUrl = URL.createObjectURL(values.image);
-      // Llamar a la función onUpload para almacenar la imagen temporalmente
-      onUpload(month, imageUrl);
-      // Cerrar el modal
-      onSuccess();
+      onSuccess(imageUrl);
+      if (setIsOpen) setIsOpen();
       toast.success("Imagen cargada temporalmente");
     } catch (error) {
       toast.error("Error al cargar la imagen");
@@ -88,7 +88,7 @@ export const ImageUploader: React.FC<{
             <FormItem className="mx-auto md:w-1/2">
               <FormLabel
                 className={`${
-                  fileRejections.length !== 0 && "text-destructive"
+                  fileRejections.length !== 0 ? "text-destructive" : ""
                 }`}
               >
                 <h2 className="text-xl font-semibold tracking-tight">
@@ -111,10 +111,10 @@ export const ImageUploader: React.FC<{
                     <Image
                       src={preview}
                       alt="Uploaded image"
-                      width={400} // Ancho máximo
-                      height={400} // Altura máxima
+                      width={400}
+                      height={400}
                       className="max-h-[400px] rounded-lg"
-                      unoptimized // Desactiva la optimización porque es una imagen local/dinámica
+                      unoptimized
                     />
                   )}
                   <ImagePlus

@@ -1,9 +1,10 @@
+// app/page.tsx
 "use client";
-import EditControls from "@/components/edit-controls";
-import MonthGrid from "@/components/month-grid";
+import { ImageUploader } from "@/components/image-uploader";
 import { useEditing } from "@/context/EditingContext";
 import { pocketbaseClient } from "@/lib/pocketbase";
 import { PhotosMonthOptions } from "@/types/pocketbase-types";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -26,96 +27,50 @@ const months: PhotosMonthOptions[] = [
 export default function Home() {
   const pathname = usePathname();
   const sessionIdFromUrl = pathname.split("/")[1];
-  const [sessionId, setSessionId] = useState<string | null>(null);
+  const [selectedMonth, setSelectedMonth] = useState<PhotosMonthOptions | null>(
+    null
+  );
   const [photos, setPhotos] = useState<Record<PhotosMonthOptions, string>>(
     {} as Record<PhotosMonthOptions, string>
   );
-  const [temporalPhotos, setTemporalPhotos] = useState<
-    Record<PhotosMonthOptions, string>
-  >({} as Record<PhotosMonthOptions, string>);
   const [isLoadingPhotos, setIsLoadingPhotos] = useState(true);
-  const { isEditing, setIsEditing } = useEditing();
+  const { isEditing, temporalPhotos, setTemporalPhotos } = useEditing();
+
+  const sessionId = pathname.split("/")[1] || "0d5tth946j9me9c";
 
   useEffect(() => {
-    const fetchSessionId = async () => {
-      try {
-        const sessionId = sessionIdFromUrl || "0d5tth946j9me9c";
-        setSessionId(sessionId);
-      } catch (error) {
-        console.error("Error fetching session ID:", error);
-      }
-    };
-    fetchSessionId();
-  }, [sessionIdFromUrl]);
-
-  useEffect(() => {
-    const fetchPhotos = async () => {
-      if (!sessionId) return;
-      setIsLoadingPhotos(true);
-      try {
-        const records = await pocketbaseClient.getPhotos(sessionId);
-        const photosMap = records.reduce(
-          (acc, record) => ({
-            ...acc,
-            [record.month]: pocketbaseClient.pb.files.getUrl(
-              record,
-              record.photo
-            ),
-          }),
-          {} as Record<PhotosMonthOptions, string>
-        );
-        setPhotos(photosMap);
-      } catch (error) {
-        console.error("Error loading photos:", error);
-        toast.error("Error al cargar las fotos");
-      } finally {
-        setIsLoadingPhotos(false);
-      }
-    };
-    fetchPhotos();
-  }, [sessionId]);
-
-  const handleSaveChanges = async () => {
-    try {
-      if (!sessionId) throw new Error("No hay una sesión activa");
-      const updates = Object.entries(temporalPhotos).map(
-        async ([month, imageUrl]) => {
-          const response = await fetch(imageUrl);
-          const blob = await response.blob();
-          const file = new File([blob], `${month}.webp`, { type: blob.type });
-          await pocketbaseClient.uploadPhoto(
-            sessionId,
-            month as PhotosMonthOptions,
-            file
+    if (!isEditing && sessionId) {
+      const refreshPhotos = async (): Promise<void> => {
+        setIsLoadingPhotos(true);
+        try {
+          const records = await pocketbaseClient.getPhotos(sessionId);
+          const photosMap = records.reduce(
+            (acc, record) => ({
+              ...acc,
+              [record.month]: pocketbaseClient.pb.files.getUrl(
+                record,
+                record.photo
+              ),
+            }),
+            {} as Record<PhotosMonthOptions, string>
           );
+          setPhotos(photosMap);
+        } catch (error) {
+          console.error("Error loading photos:", error);
+          toast.error("Error al cargar las fotos");
+        } finally {
+          setIsLoadingPhotos(false);
         }
-      );
-      await Promise.all(updates);
-      toast.success("Cambios guardados correctamente");
-      setTemporalPhotos({} as Record<PhotosMonthOptions, string>);
-      const updatedRecords = await pocketbaseClient.getPhotos(sessionId);
-      setPhotos(
-        updatedRecords.reduce(
-          (acc, record) => ({
-            ...acc,
-            [record.month]: pocketbaseClient.pb.files.getUrl(
-              record,
-              record.photo
-            ),
-          }),
-          {} as Record<PhotosMonthOptions, string>
-        )
-      );
-    } catch (error) {
-      toast.error("Error al guardar los cambios");
-      console.error("Save error:", error);
-    }
-  };
+      };
 
-  const handleCancelChanges = () => {
-    setTemporalPhotos({} as Record<PhotosMonthOptions, string>);
-    setIsEditing(false);
-    toast.info("Cambios cancelados");
+      refreshPhotos();
+    }
+  }, [isEditing, sessionId]);
+
+  const handleUploadSuccess = (month: PhotosMonthOptions, imageUrl: string) => {
+    setTemporalPhotos({ ...temporalPhotos, [month]: imageUrl });
+    setSelectedMonth(null);
+    toast.success(`Imagen de ${month} actualizada`);
   };
 
   return (
@@ -123,21 +78,69 @@ export default function Home() {
       <h1 className="font-dancing text-3xl sm:text-4xl font-bold text-center mb-4 sm:mb-12 mt-14 md:mt-10">
         Album MariRey
       </h1>
-      <MonthGrid
-        months={months}
-        photos={photos}
-        temporalPhotos={temporalPhotos}
-        isLoadingPhotos={isLoadingPhotos}
-        isEditing={isEditing}
-        onUploadSuccess={(month, imageUrl) =>
-          setTemporalPhotos((prev) => ({ ...prev, [month]: imageUrl }))
-        }
-      />
-      {isEditing && Object.keys(temporalPhotos).length > 0 && (
-        <EditControls
-          onSave={handleSaveChanges}
-          onCancel={handleCancelChanges}
-        />
+
+      <div className="grid grid-cols-3 sm:grid-cols-4 gap-4 sm:gap-6 md:gap-8 w-full max-w-5xl">
+        {months.map((month, index) => {
+          const imageUrl = temporalPhotos[month] || photos[month];
+          const showDefault = !imageUrl || isLoadingPhotos;
+
+          return (
+            <div key={index} className="flex flex-col items-center">
+              <h2 className="font-playfair text-lg font-semibold text-center mb-2 sm:mb-4">
+                {month}
+              </h2>
+
+              <button
+                className="w-full aspect-square border rounded-lg overflow-hidden shadow-md relative flex items-center justify-center"
+                onClick={() => isEditing && setSelectedMonth(month)}
+                disabled={!isEditing}
+              >
+                {showDefault ? (
+                  <div className="absolute inset-0 bg-gray-100 flex items-center justify-center">
+                    <Image
+                      src="/img/pendiente.webp"
+                      alt="Imagen pendiente"
+                      fill
+                      className="object-cover rounded-lg"
+                    />
+                  </div>
+                ) : (
+                  <Image
+                    src={imageUrl}
+                    alt={`${month} image`}
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className="object-cover rounded-lg"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = "/img/pendiente.webp";
+                    }}
+                  />
+                )}
+
+                {isEditing && (
+                  <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                    <span className="text-white">Cambiar imagen</span>
+                  </div>
+                )}
+              </button>
+            </div>
+          );
+        })}
+      </div>
+
+      {isEditing && selectedMonth && (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+          <div className="bg-background p-6 rounded-lg max-w-2xl w-full">
+            <ImageUploader
+              sessionId={sessionId!}
+              month={selectedMonth}
+              onSuccess={(url) => handleUploadSuccess(selectedMonth, url)}
+              isOpen={!!selectedMonth}
+              setIsOpen={() => setSelectedMonth(null)}
+            />
+          </div>
+        </div>
       )}
     </div>
   );

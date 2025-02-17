@@ -1,32 +1,44 @@
-// components/components/navbar.tsx
+// components/navbar.tsx
 "use client";
-
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { ToggleTheme } from "@/components/ui/toogle-theme";
-import { useEditing } from "@/context/EditingContext"; // Importar el contexto
+import { useEditing } from "@/context/EditingContext";
 import { pocketbaseClient } from "@/lib/pocketbase";
 import { cn } from "@/lib/utils";
+import { PhotosMonthOptions } from "@/types/pocketbase-types";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { FaEdit } from "react-icons/fa";
+import { FaEdit, FaSave, FaTimes } from "react-icons/fa";
+import { toast } from "sonner";
 import { LoginForm } from "./loginForm";
 import { UserDropdown } from "./userDropDown";
 
-declare global {
-  interface Window {
-    saveCalendarChanges: () => Promise<void>;
-  }
-}
-
 export default function Navbar() {
+  const pathname = usePathname();
+  const sessionIdFromUrl = pathname.split("/")[1];
+
+  const [sessionId, setSessionId] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const { isEditing, setIsEditing, temporalPhotos, setTemporalPhotos } =
+    useEditing();
 
-  // Usar el contexto
-  const { isEditing, setIsEditing } = useEditing();
+  useEffect(() => {
+    const fetchSessionId = async () => {
+      try {
+        const sessionId = sessionIdFromUrl || "0d5tth946j9me9c";
+        setSessionId(sessionId);
+      } catch (error) {
+        console.error("Error fetching session ID:", error);
+      }
+    };
+
+    fetchSessionId();
+  }, [sessionIdFromUrl]);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -40,28 +52,59 @@ export default function Navbar() {
         setIsLoading(false);
       }
     };
-
     checkAuth();
   }, []);
 
-  // Manejar cierre de sesión
   const handleLogout = () => {
     pocketbaseClient.logout();
     setIsAuthenticated(false);
+    setIsEditing(false);
   };
 
-  // Manejar inicio de sesión exitoso
   const handleLogin = () => {
     setIsAuthenticated(true);
-    setIsDialogOpen(false); // Cerrar el diálogo después del login
+    setIsDialogOpen(false);
   };
 
-  // Entrar en modo edición
-  const handleEditClick = () => {
-    setIsEditing(true);
+  const handleSaveChanges = async () => {
+    try {
+      if (!sessionId) throw new Error("No hay una sesión activa");
+
+      const updates = Object.entries(temporalPhotos).map(
+        async ([month, imageUrl]) => {
+          try {
+            const response = await fetch(imageUrl);
+            const blob = await response.blob();
+            const file = new File([blob], `${month}.webp`, { type: blob.type });
+
+            await pocketbaseClient.uploadPhoto(
+              sessionId,
+              month as PhotosMonthOptions,
+              file
+            );
+          } catch (error) {
+            console.error(`Error al actualizar ${month}:`, error);
+            throw error;
+          }
+        }
+      );
+
+      await Promise.all(updates);
+      toast.success("Cambios guardados correctamente");
+      setTemporalPhotos({} as Record<PhotosMonthOptions, string>);
+      setIsEditing(false);
+    } catch (error) {
+      toast.error("Error al guardar los cambios");
+      console.error("Save error:", error);
+    }
   };
 
-  // Mostrar loader mientras se verifica la autenticación
+  const handleCancelChanges = () => {
+    setTemporalPhotos({} as Record<PhotosMonthOptions, string>);
+    setIsEditing(false);
+    toast.info("Cambios cancelados");
+  };
+
   if (isLoading) {
     return (
       <header className="absolute inset-x-0 top-0 z-50">
@@ -89,9 +132,9 @@ export default function Navbar() {
           alt="Logo"
           width={100}
           height={32}
+          priority
           className="h-12 w-auto"
         />
-
         <div className="flex items-center gap-2 sm:gap-4">
           {isAuthenticated ? (
             <>
@@ -104,11 +147,33 @@ export default function Navbar() {
                     isEditing && "bg-green-600 hover:bg-green-700 text-white"
                   )}
                   size="sm"
-                  onClick={handleEditClick}
+                  onClick={
+                    isEditing ? handleSaveChanges : () => setIsEditing(true)
+                  }
                 >
-                  <FaEdit className="h-5 w-5" />
-                  <span className="hidden sm:inline">Editar</span>
+                  {isEditing ? (
+                    <>
+                      <FaSave className="h-5 w-5" />
+                      <span className="hidden sm:inline">Guardar</span>
+                    </>
+                  ) : (
+                    <>
+                      <FaEdit className="h-5 w-5" />
+                      <span className="hidden sm:inline">Editar</span>
+                    </>
+                  )}
                 </Button>
+                {isEditing && (
+                  <Button
+                    variant="destructive"
+                    onClick={handleCancelChanges}
+                    className="gap-2"
+                    size="sm"
+                  >
+                    <FaTimes className="h-4 w-4" />
+                    <span className="hidden sm:inline">Cancelar</span>
+                  </Button>
+                )}
               </div>
             </>
           ) : (

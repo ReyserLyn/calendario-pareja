@@ -1,29 +1,33 @@
 // context/EditingContext.tsx
 "use client";
 
+import { PhotosMonthOptions } from "@/types/pocketbase-types";
 import { createContext, useContext, useState } from "react";
 
-type EditingContextType = {
+interface EditingContextType {
   isEditing: boolean;
-  setIsEditing: (isEditing: boolean) => void;
-};
+  setIsEditing: (editing: boolean) => void;
+  temporalPhotos: Record<PhotosMonthOptions, string>;
+  setTemporalPhotos: (photos: Record<PhotosMonthOptions, string>) => void;
+}
 
-const EditingContext = createContext<EditingContextType | undefined>(undefined);
+const EditingContext = createContext<EditingContextType>(
+  {} as EditingContextType
+);
 
 export function EditingProvider({ children }: { children: React.ReactNode }) {
   const [isEditing, setIsEditing] = useState(false);
+  const [temporalPhotos, setTemporalPhotos] = useState<
+    Record<PhotosMonthOptions, string>
+  >({} as Record<PhotosMonthOptions, string>);
 
   return (
-    <EditingContext.Provider value={{ isEditing, setIsEditing }}>
+    <EditingContext.Provider
+      value={{ isEditing, setIsEditing, temporalPhotos, setTemporalPhotos }}
+    >
       {children}
     </EditingContext.Provider>
   );
 }
 
-export function useEditing() {
-  const context = useContext(EditingContext);
-  if (!context) {
-    throw new Error("useEditing must be used within an EditingProvider");
-  }
-  return context;
-}
+export const useEditing = () => useContext(EditingContext);
