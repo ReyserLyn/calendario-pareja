@@ -25,7 +25,7 @@ export const ImageUploader: React.FC<{
   onSuccess: (imageUrl: string) => void;
   isOpen?: boolean;
   setIsOpen?: () => void;
-}> = ({ sessionId, month, onSuccess, isOpen, setIsOpen }) => {
+}> = ({ onSuccess, setIsOpen }) => {
   const [preview, setPreview] = React.useState<string | ArrayBuffer | null>("");
 
   const formSchema = z.object({

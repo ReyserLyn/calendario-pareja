@@ -26,7 +26,7 @@ const months: PhotosMonthOptions[] = [
 
 export default function Home() {
   const pathname = usePathname();
-  const sessionIdFromUrl = pathname.split("/")[1];
+  const sessionId = pathname.split("/")[1] || "0d5tth946j9me9c";
   const [selectedMonth, setSelectedMonth] = useState<PhotosMonthOptions | null>(
     null
   );
@@ -35,8 +35,6 @@ export default function Home() {
   );
   const [isLoadingPhotos, setIsLoadingPhotos] = useState(true);
   const { isEditing, temporalPhotos, setTemporalPhotos } = useEditing();
-
-  const sessionId = pathname.split("/")[1] || "0d5tth946j9me9c";
 
   useEffect(() => {
     if (!isEditing && sessionId) {
