@@ -134,7 +134,8 @@ class PocketBaseClient {
       const existing = await this.pb
         .collection("photos")
         .getFirstListItem<PhotosResponse>(
-          `month="${month}" && session="${sessionId}"`
+          `month="${month}" && session="${sessionId}"`,
+          { requestKey: null } // 🔹 Agregado aquí
         )
         .catch(() => null);
 
@@ -147,12 +148,12 @@ class PocketBaseClient {
         // Actualizar registro existente
         return await this.pb
           .collection("photos")
-          .update<PhotosResponse>(existing.id, formData);
+          .update<PhotosResponse>(existing.id, formData, { requestKey: null }); // 🔹 Agregado aquí
       } else {
         // Crear nuevo registro
         return await this.pb
           .collection("photos")
-          .create<PhotosResponse>(formData);
+          .create<PhotosResponse>(formData, { requestKey: null }); // 🔹 Agregado aquí
       }
     } catch (error) {
       console.error("Error al subir foto:", error);
