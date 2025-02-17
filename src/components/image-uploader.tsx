@@ -16,8 +16,8 @@ import { useDropzone } from "react-dropzone";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
 
 export const ImageUploader: React.FC<{
   sessionId: string;

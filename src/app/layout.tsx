@@ -1,4 +1,4 @@
-import { ThemeProvider } from "@/components/components/theme-provider";
+import { ThemeProvider } from "@/components/theme-provider";
 import type { Metadata } from "next";
 import { Dancing_Script, Playfair_Display, Roboto } from "next/font/google";
 import { Toaster } from "sonner";
