@@ -10,11 +10,13 @@ import { usePathname } from "next/navigation";
 export default function Home() {
   const sessionId = getSessionIdFromPathname(usePathname());
   const { isEditing } = useEditing();
+
   const {
     photos,
     isLoading: isLoadingPhotos,
     updatePhoto,
   } = usePhotos(sessionId, isEditing);
+
   const { selectedMonth, handleUploadSuccess, setSelectedMonth } =
     useUploadModal();
 

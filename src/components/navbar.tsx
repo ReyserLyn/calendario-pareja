@@ -23,6 +23,7 @@ export default function Navbar() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+
   const { isEditing, setIsEditing, temporalPhotos, setTemporalPhotos } =
     useEditing();
 
