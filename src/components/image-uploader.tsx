@@ -4,10 +4,8 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { PhotosMonthOptions } from "@/types/pocketbase-types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ImagePlus } from "lucide-react";
 import Image from "next/image";
@@ -20,11 +18,10 @@ import { Button } from "./ui/button";
 
 export const ImageUploader: React.FC<{
   sessionId: string;
-  month: PhotosMonthOptions;
+  month: string;
   onSuccess: (imageUrl: string) => void;
-  isOpen?: boolean;
-  setIsOpen?: () => void;
-}> = ({ onSuccess, setIsOpen }) => {
+  className?: string;
+}> = ({ onSuccess, className }) => {
   const [preview, setPreview] = React.useState<string | ArrayBuffer | null>("");
 
   const formSchema = z.object({
@@ -69,7 +66,6 @@ export const ImageUploader: React.FC<{
     try {
       const imageUrl = URL.createObjectURL(values.image);
       onSuccess(imageUrl);
-      if (setIsOpen) setIsOpen();
       toast.success("Imagen cargada temporalmente");
     } catch (error) {
       toast.error("Error al cargar la imagen");
@@ -79,42 +75,30 @@ export const ImageUploader: React.FC<{
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className=" flex flex-col space-y-8"
-      >
+      <form onSubmit={form.handleSubmit(onSubmit)} className={className}>
         <FormField
           control={form.control}
           name="image"
           render={() => (
-            <FormItem className="mx-auto max-w-md">
-              <FormLabel
-                className={`text-lg ${
-                  fileRejections.length !== 0
-                    ? "text-destructive"
-                    : "text-foreground"
-                }`}
-              >
-                Sube tu imagen
-              </FormLabel>
+            <FormItem>
               <FormControl>
                 <div
                   {...getRootProps()}
-                  className={`group flex cursor-pointer flex-col items-center justify-center gap-4 rounded-xl border-2 border-dashed border-input p-8 transition-colors hover:border-primary ${
+                  className={`group flex cursor-pointer flex-col items-center justify-center gap-4 rounded-xl border-2 border-dashed border-input p-4 transition-colors hover:border-primary ${
                     isDragActive ? "border-primary bg-muted/50" : "bg-muted/30"
                   }`}
                 >
                   <input {...getInputProps()} type="file" />
                   <div className="flex flex-col items-center gap-4 text-center">
                     {preview && typeof preview === "string" ? (
-                      <div className="max-h-[400px] max-w-full overflow-hidden">
+                      <div className="max-h-[300px] max-w-full overflow-hidden">
                         <Image
                           src={preview}
                           alt="Uploaded image"
                           width={0}
                           height={0}
                           sizes="(max-width: 768px) 100vw, 400px"
-                          className="h-auto w-auto max-h-[400px] max-w-full object-scale-down"
+                          className="h-auto w-auto max-h-[300px] max-w-full object-scale-down"
                           unoptimized
                         />
                       </div>
@@ -149,7 +133,7 @@ export const ImageUploader: React.FC<{
         <Button
           type="submit"
           disabled={form.formState.isSubmitting}
-          className="mx-auto h-12 rounded-full px-8 text-lg font-semibold transition-transform hover:scale-105"
+          className="mt-6 w-full h-12 rounded-lg text-lg font-semibold transition-transform hover:scale-105"
         >
           Subir imagen
         </Button>

@@ -1,6 +1,6 @@
 "use client";
-import { ImageUploader } from "@/components/image-uploader";
 import { MonthGrid } from "@/components/month-grid";
+import { ResponsiveDialog } from "@/components/responsive-dialog";
 import { useEditing } from "@/context/EditingContext";
 import { usePhotos } from "@/hooks/usePhotos";
 import { useUploadModal } from "@/hooks/useUploadModal";
@@ -32,19 +32,15 @@ export default function Home() {
       />
 
       {isEditing && selectedMonth && (
-        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
-          <div className="bg-background p-6 rounded-lg max-w-2xl w-full">
-            <ImageUploader
-              sessionId={sessionId}
-              month={selectedMonth}
-              onSuccess={(url) =>
-                handleUploadSuccess(selectedMonth, url, updatePhoto)
-              }
-              isOpen={!!selectedMonth}
-              setIsOpen={() => setSelectedMonth(null)}
-            />
-          </div>
-        </div>
+        <ResponsiveDialog
+          sessionId={sessionId}
+          month={selectedMonth}
+          onSuccess={(url) =>
+            handleUploadSuccess(selectedMonth, url, updatePhoto)
+          }
+          isOpen={!!selectedMonth}
+          setIsOpen={() => setSelectedMonth(null)}
+        />
       )}
     </div>
   );
