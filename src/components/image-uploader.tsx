@@ -17,7 +17,6 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import { Button } from "./ui/button";
-import { Input } from "./ui/input";
 
 export const ImageUploader: React.FC<{
   sessionId: string;
@@ -80,60 +79,69 @@ export const ImageUploader: React.FC<{
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className=" flex flex-col space-y-8"
+      >
         <FormField
           control={form.control}
           name="image"
           render={() => (
-            <FormItem className="mx-auto md:w-1/2">
+            <FormItem className="mx-auto max-w-md">
               <FormLabel
-                className={`${
-                  fileRejections.length !== 0 ? "text-destructive" : ""
+                className={`text-lg ${
+                  fileRejections.length !== 0
+                    ? "text-destructive"
+                    : "text-foreground"
                 }`}
               >
-                <h2 className="text-xl font-semibold tracking-tight">
-                  Upload your image
-                  <span
-                    className={
-                      form.formState.errors.image || fileRejections.length !== 0
-                        ? "text-destructive"
-                        : "text-muted-foreground"
-                    }
-                  ></span>
-                </h2>
+                Sube tu imagen
               </FormLabel>
               <FormControl>
                 <div
                   {...getRootProps()}
-                  className="mx-auto flex cursor-pointer flex-col items-center justify-center gap-y-2 rounded-lg border border-foreground p-8 shadow-sm shadow-foreground"
+                  className={`group flex cursor-pointer flex-col items-center justify-center gap-4 rounded-xl border-2 border-dashed border-input p-8 transition-colors hover:border-primary ${
+                    isDragActive ? "border-primary bg-muted/50" : "bg-muted/30"
+                  }`}
                 >
-                  {preview && typeof preview === "string" && (
-                    <Image
-                      src={preview}
-                      alt="Uploaded image"
-                      width={400}
-                      height={400}
-                      className="max-h-[400px] rounded-lg"
-                      unoptimized
-                    />
-                  )}
-                  <ImagePlus
-                    className={`size-40 ${preview ? "hidden" : "block"}`}
-                  />
-                  <Input {...getInputProps()} type="file" />
-                  {isDragActive ? (
-                    <p>Drop the image!</p>
-                  ) : (
-                    <p>Click here or drag an image to upload it</p>
-                  )}
+                  <input {...getInputProps()} type="file" />
+                  <div className="flex flex-col items-center gap-4 text-center">
+                    {preview && typeof preview === "string" ? (
+                      <div className="max-h-[400px] max-w-full overflow-hidden">
+                        <Image
+                          src={preview}
+                          alt="Uploaded image"
+                          width={0}
+                          height={0}
+                          sizes="(max-width: 768px) 100vw, 400px"
+                          className="h-auto w-auto max-h-[400px] max-w-full object-scale-down"
+                          unoptimized
+                        />
+                      </div>
+                    ) : (
+                      <>
+                        <ImagePlus className="h-12 w-12 text-muted-foreground transition-colors group-hover:text-primary" />
+                        <div className="space-y-2">
+                          <p className="font-medium text-foreground">
+                            {isDragActive
+                              ? "Suelta la imagen aquí"
+                              : "Haz clic para seleccionar o arrastra una imagen"}
+                          </p>
+                          <p className="text-sm text-muted-foreground">
+                            Formatos soportados: PNG, JPG, JPEG
+                          </p>
+                          <p className="text-sm text-muted-foreground">
+                            Tamaño máximo: 1MB
+                          </p>
+                        </div>
+                      </>
+                    )}
+                  </div>
                 </div>
               </FormControl>
-              <FormMessage>
-                {fileRejections.length !== 0 && (
-                  <p>
-                    Image must be less than 1MB and of type png, jpg, or jpeg
-                  </p>
-                )}
+              <FormMessage className="text-center">
+                {fileRejections.length !== 0 &&
+                  "La imagen debe ser menor a 1MB y en formato PNG, JPG o JPEG"}
               </FormMessage>
             </FormItem>
           )}
@@ -141,9 +149,9 @@ export const ImageUploader: React.FC<{
         <Button
           type="submit"
           disabled={form.formState.isSubmitting}
-          className="mx-auto block h-auto rounded-lg px-8 py-3 text-xl"
+          className="mx-auto h-12 rounded-full px-8 text-lg font-semibold transition-transform hover:scale-105"
         >
-          Submit
+          Subir imagen
         </Button>
       </form>
     </Form>
