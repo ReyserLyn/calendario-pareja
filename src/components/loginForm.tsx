@@ -127,7 +127,7 @@ export function LoginForm({
                   description={
                     <Link href="/reset" onClick={onClose}>
                       Olvidaste tu contraseña?
-                    </Link> // Enlace a la página de reset
+                    </Link>
                   }
                 />
 

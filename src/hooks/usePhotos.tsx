@@ -9,7 +9,6 @@ export const usePhotos = (sessionId: string, isEditing: boolean) => {
   );
   const [isLoading, setIsLoading] = useState(true);
 
-  // Función para cargar fotos desde el servidor
   useEffect(() => {
     if (!isEditing && sessionId) {
       const loadPhotos = async () => {
@@ -38,7 +37,6 @@ export const usePhotos = (sessionId: string, isEditing: boolean) => {
     }
   }, [isEditing, sessionId]);
 
-  // Función para actualizar fotos temporales
   const updatePhoto = (month: PhotosMonthOptions, url: string) => {
     setPhotos((prevPhotos) => ({
       ...prevPhotos,

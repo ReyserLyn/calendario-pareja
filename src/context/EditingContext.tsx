@@ -1,4 +1,3 @@
-// context/EditingContext.tsx
 "use client";
 
 import { PhotosMonthOptions } from "@/types/pocketbase-types";

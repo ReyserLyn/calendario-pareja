@@ -23,12 +23,14 @@ export default function Home() {
       <h1 className="font-dancing text-3xl sm:text-4xl font-bold text-center mb-4 sm:mb-12 mt-14 md:mt-10">
         Album MariRey
       </h1>
+
       <MonthGrid
         photos={photos}
         isLoading={isLoadingPhotos}
         onMonthSelect={setSelectedMonth}
         isEditing={isEditing}
       />
+
       {isEditing && selectedMonth && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
           <div className="bg-background p-6 rounded-lg max-w-2xl w-full">

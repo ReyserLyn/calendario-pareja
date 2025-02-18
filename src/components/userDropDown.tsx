@@ -11,19 +11,15 @@ import { pocketbaseClient } from "@/lib/pocketbase";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-export function UserDropdown({
-  onLogout, // Nueva prop para manejar el logout
-}: {
-  onLogout: () => void;
-}) {
+export function UserDropdown({ onLogout }: { onLogout: () => void }) {
   const router = useRouter();
   const user = pocketbaseClient.getCurrentUser();
 
   const handleLogout = () => {
     pocketbaseClient.logout();
     toast.success("Sesión cerrada correctamente.");
-    onLogout(); // Actualizar el estado de autenticación en el componente padre
-    router.push("/"); // Redirigir a la página principal
+    onLogout();
+    router.push("/");
   };
 
   if (!user) return null;

@@ -14,10 +14,8 @@ export const useUploadModal = () => {
     imageUrl: string,
     updatePhoto: (month: PhotosMonthOptions, url: string) => void
   ) => {
-    // Actualizar estado temporal
     setTemporalPhotos({ ...temporalPhotos, [month]: imageUrl });
 
-    // Actualizar estado principal de photos
     updatePhoto(month, imageUrl);
 
     setSelectedMonth(null);
