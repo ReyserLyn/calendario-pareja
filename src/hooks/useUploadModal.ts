@@ -1,4 +1,4 @@
-import { useEditing } from "@/context/EditingContext";
+import { useEditing } from "@/context/editing-context";
 import { PhotosMonthOptions } from "@/types/pocketbase-types";
 import { useState } from "react";
 import { toast } from "sonner";

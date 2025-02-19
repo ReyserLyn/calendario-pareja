@@ -1,7 +1,7 @@
 "use client";
 import { MonthGrid } from "@/components/month-grid";
 import { ResponsiveDialog } from "@/components/responsive-dialog";
-import { useEditing } from "@/context/EditingContext";
+import { useEditing } from "@/context/editing-context";
 import { usePhotos } from "@/hooks/usePhotos";
 import { useUploadModal } from "@/hooks/useUploadModal";
 import { getSessionIdFromPathname } from "@/lib/sessions";

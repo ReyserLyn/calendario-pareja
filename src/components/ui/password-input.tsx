@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { createElement, JSX, useState } from "react";
 import { useFormContext } from "react-hook-form";
-import { Box } from "./Box";
+import { Box } from "./box";
 
 type PasswordFieldProps = {
   name?: string;

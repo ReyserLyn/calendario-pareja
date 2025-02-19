@@ -1,5 +1,5 @@
-import Navbar from "@/components/navbar";
-import { EditingProvider } from "@/context/EditingContext";
+import Navbar from "@/components/navbar/navbar";
+import { EditingProvider } from "@/context/editing-context";
 
 export default function MainLayout({
   children,

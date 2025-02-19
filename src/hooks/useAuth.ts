@@ -1,0 +1,35 @@
+"use client";
+
+import { pocketbaseClient } from "@/lib/pocketbase";
+import { useEffect, useState } from "react";
+
+export function useAuth() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const valid = await pocketbaseClient.validateAuth();
+        setIsAuthenticated(valid);
+      } catch (error) {
+        console.error("Error al validar la autenticación:", error);
+        setIsAuthenticated(false);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    checkAuth();
+  }, []);
+
+  const handleLogout = () => {
+    pocketbaseClient.logout();
+    setIsAuthenticated(false);
+  };
+
+  const handleLogin = () => {
+    setIsAuthenticated(true);
+  };
+
+  return { isAuthenticated, isLoading, handleLogout, handleLogin };
+}
