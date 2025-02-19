@@ -4,7 +4,7 @@ import { ToggleTheme } from "@/components/ui/toogle-theme";
 import { useEditing } from "@/context/editing-context";
 import { useAuth } from "@/hooks/useAuth";
 import { useSession } from "@/hooks/useSessions";
-import { uploadPhotos } from "@/lib/upload-photos";
+import { uploadPhotos } from "@/lib/uploadPhotos";
 import { PhotosMonthOptions } from "@/types/pocketbase-types";
 import Image from "next/image";
 import { useState } from "react";
