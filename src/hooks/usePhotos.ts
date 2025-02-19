@@ -17,7 +17,7 @@ export const usePhotos = (sessionId: string, isEditing: boolean) => {
           const photosMap = records.reduce(
             (acc, record) => ({
               ...acc,
-              [record.month]: pocketbaseClient.pb.files.getUrl(
+              [record.month]: pocketbaseClient.pb.files.getURL(
                 record,
                 record.photo
               ),
