@@ -6,9 +6,20 @@ class PocketBaseClient {
   public pb: TypedPocketBase;
 
   private constructor() {
-    this.pb = new PocketBase(
-      process.env.NEXT_PUBLIC_POCKETBASE_URL || "http://localhost:8090"
-    ) as TypedPocketBase;
+    const pocketbaseUrl = process.env.NEXT_PUBLIC_POCKETBASE_URL;
+
+    if (!pocketbaseUrl) {
+      throw new Error(
+        "POCKETBASE_URL is not defined in environment variables."
+      );
+    }
+
+    try {
+      this.pb = new PocketBase(pocketbaseUrl) as TypedPocketBase;
+    } catch (error) {
+      console.error("Failed to initialize PocketBase client:", error);
+      throw error;
+    }
   }
 
   public static getInstance(): PocketBaseClient {
