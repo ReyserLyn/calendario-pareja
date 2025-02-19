@@ -19,7 +19,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FaEdit, FaSave, FaTimes } from "react-icons/fa";
 import { toast } from "sonner";
-import { LoginForm } from "./navbar/login-form";
+import { LoginForm } from "./loginForm";
 import { UserDropdown } from "./userDropDown";
 
 export default function Navbar() {
