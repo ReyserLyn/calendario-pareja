@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { PasswordField } from "@/components/ui/password-input";
-import { pocketbaseClient } from "@/lib/pocketbase";
+import { login, validateAuth } from "@/lib/pocketbase";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
@@ -64,7 +64,7 @@ export function LoginForm({
 
   useEffect(() => {
     const checkAuth = async () => {
-      const isValid = await pocketbaseClient.validateAuth();
+      const isValid = await validateAuth();
       setIsAuthenticated(isValid);
       if (isValid) router.push("/");
     };
@@ -75,7 +75,7 @@ export function LoginForm({
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
     try {
-      await pocketbaseClient.login(values.username, values.password);
+      await login(values.username, values.password);
       toast.success("Sesión iniciada correctamente");
 
       onClose();

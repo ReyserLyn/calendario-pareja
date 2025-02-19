@@ -1,4 +1,4 @@
-import { pocketbaseClient } from "@/lib/pocketbase";
+import { getPhotos, pocketbaseClient } from "@/lib/pocketbase";
 import { PhotosMonthOptions } from "@/types/pocketbase-types";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -13,7 +13,7 @@ export const usePhotos = (sessionId: string, isEditing: boolean) => {
     if (!isEditing && sessionId) {
       const loadPhotos = async () => {
         try {
-          const records = await pocketbaseClient.getPhotos(sessionId);
+          const records = await getPhotos(sessionId);
           const photosMap = records.reduce(
             (acc, record) => ({
               ...acc,

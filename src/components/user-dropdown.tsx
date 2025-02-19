@@ -7,16 +7,16 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { pocketbaseClient } from "@/lib/pocketbase";
+import { getCurrentUser, logout } from "@/lib/pocketbase";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 export function UserDropdown({ onLogout }: { onLogout: () => void }) {
   const router = useRouter();
-  const user = pocketbaseClient.getCurrentUser();
+  const user = getCurrentUser();
 
   const handleLogout = () => {
-    pocketbaseClient.logout();
+    logout();
     toast.success("Sesión cerrada correctamente.");
     onLogout();
     router.push("/");
