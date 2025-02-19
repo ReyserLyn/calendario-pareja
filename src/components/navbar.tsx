@@ -9,6 +9,7 @@ import {
 import { ToggleTheme } from "@/components/ui/toogle-theme";
 import { useEditing } from "@/context/EditingContext";
 import { pocketbaseClient } from "@/lib/pocketbase";
+import { getSessionIdFromPathname } from "@/lib/sessions";
 import { cn } from "@/lib/utils";
 import { PhotosMonthOptions } from "@/types/pocketbase-types";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
@@ -18,14 +19,14 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FaEdit, FaSave, FaTimes } from "react-icons/fa";
 import { toast } from "sonner";
-import { LoginForm } from "./loginForm";
+import { LoginForm } from "./navbar/login-form";
 import { UserDropdown } from "./userDropDown";
 
 export default function Navbar() {
   const pathname = usePathname();
-  const sessionIdFromUrl = pathname.split("/")[1];
-
+  const sessionIdFromUrl = getSessionIdFromPathname(pathname);
   const [sessionId, setSessionId] = useState<string | null>(null);
+
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);

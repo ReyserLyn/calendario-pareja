@@ -4,7 +4,7 @@ import { ResponsiveDialog } from "@/components/responsive-dialog";
 import { useEditing } from "@/context/EditingContext";
 import { usePhotos } from "@/hooks/usePhotos";
 import { useUploadModal } from "@/hooks/useUploadModal";
-import { getSessionIdFromPathname } from "@/lib/seesions";
+import { getSessionIdFromPathname } from "@/lib/sessions";
 import { usePathname } from "next/navigation";
 
 export default function Home() {
