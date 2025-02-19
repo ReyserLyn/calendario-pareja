@@ -1,13 +1,13 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import { pocketbaseClient } from "./lib/pocketbase";
+import { validateAuth } from "./lib/pocketbase";
 
 export async function middleware(request: NextRequest) {
   const protectedRoutes = ["/profile"];
   const authRoutes = ["/login"];
 
   try {
-    const isAuthenticated = await pocketbaseClient.validateAuth();
+    const isAuthenticated = await validateAuth();
 
     if (authRoutes.includes(request.nextUrl.pathname) && isAuthenticated) {
       return NextResponse.redirect(new URL("/", request.url));
