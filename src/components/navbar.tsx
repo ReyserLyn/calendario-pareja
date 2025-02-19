@@ -1,11 +1,17 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { ToggleTheme } from "@/components/ui/toogle-theme";
 import { useEditing } from "@/context/EditingContext";
 import { pocketbaseClient } from "@/lib/pocketbase";
 import { cn } from "@/lib/utils";
 import { PhotosMonthOptions } from "@/types/pocketbase-types";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -182,6 +188,9 @@ export default function Navbar() {
                 <Button variant="outline">Iniciar sesión</Button>
               </DialogTrigger>
               <DialogContent className="max-w-3xl">
+                <VisuallyHidden>
+                  <DialogTitle>Login</DialogTitle>
+                </VisuallyHidden>
                 <LoginForm
                   onClose={() => setIsDialogOpen(false)}
                   onLogin={handleLogin}
