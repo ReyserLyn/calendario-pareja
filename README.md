@@ -13,7 +13,7 @@ Album MariRey es una aplicación web para gestionar un álbum de fotos organizad
 
 ## Tecnologías Utilizadas
 
-- **Next.js 14** con App Router
+- **Next.js 15** con App Router
 - **React** para componentes de UI interactivos
 - **TypeScript** para desarrollo robusto
 - **Tailwind CSS** para estilos modernos
