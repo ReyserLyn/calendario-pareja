@@ -5,7 +5,9 @@ import { notFound } from "next/navigation";
 
 export default async function DefaultSessionPage() {
   const session = await getDefaultSession();
-  if (!session) notFound();
+  if (!session) {
+    notFound();
+  }
 
   return (
     <MainLayout sessionId={session.id} sessionName={session.name}>

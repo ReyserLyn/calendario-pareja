@@ -45,18 +45,19 @@ export async function validateSession(sessionId: string): Promise<boolean> {
   }
 }
 
-// Obtiene la sesión por defecto
-export async function getDefaultSession(): Promise<SessionsResponse> {
+// Obtiene la sesión por defecto sin lanzar error en caso de fallo
+export async function getDefaultSession(): Promise<SessionsResponse | null> {
   try {
     const defaultSessionId = "0d5tth946j9me9c";
     const session = await getSession(defaultSessionId);
     if (!session) {
-      throw new Error("Default session not found");
+      console.warn("Default session not found");
+      return null;
     }
     return session;
   } catch (error) {
     console.error("Error fetching default session:", error);
-    throw new Error("Failed to load default session");
+    return null;
   }
 }
 
