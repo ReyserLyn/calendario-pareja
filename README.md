@@ -1,36 +1,84 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Album MariRey
 
-## Getting Started
+**Album MariRey** es una aplicación web para gestionar un álbum de fotos organizado por meses. Permite a los usuarios subir imágenes, visualizarlas en tiempo real, editarlas (incluyendo la eliminación y restauración) y guardar los cambios que se reflejan inmediatamente en la interfaz.
 
-First, run the development server:
+## Características
+
+- **Edición en tiempo real:** Modifica, sube y elimina imágenes con retroalimentación inmediata en la vista sin necesidad de recargar la página.
+- **Gestión centralizada del estado:** Uso de React Context para compartir el estado de las fotos en toda la aplicación (con `PhotosContext` y `EditingContext`).
+- **Carga de imágenes con previsualización:** Arrastra y suelta imágenes o selecciónalas manualmente, con una vista previa antes de confirmar la carga.
+- **Control de sesiones:** Cada álbum se asocia a un ID de sesión obtenido desde la URL.
+- **Autenticación y rutas protegidas:** Uso de middleware para redirigir a los usuarios a `/login` en rutas protegidas si no están autenticados.
+
+## Tecnologías Utilizadas
+
+- **Next.js / React:** Framework principal para construir la aplicación.
+- **TypeScript:** Tipado estricto para mejorar la calidad y mantenimiento del código.
+- **Tailwind CSS:** Estilizado de la interfaz de usuario.
+- **PocketBase:** Solución backend para almacenar datos y gestionar archivos.
+- **React Hook Form & Zod:** Gestión y validación de formularios.
+- **Sonner:** Notificaciones tipo toast.
+
+## Instalación
+
+### Requisitos Previos
+
+- [Node.js](https://nodejs.org/) (v14 o superior)
+- npm o yarn
+
+### Pasos para instalar
+
+1. Clona el repositorio:
+
+   ```bash
+   git clone https://github.com/tu-usuario/album-marirey.git
+   ```
+
+2. Entra en el directorio del proyecto:
+
+   ```bash
+   cd album-marirey
+   ```
+   
+3. Instala las dependencias:
+
+   ```bash
+   npm install
+   # o
+   yarn install
+   ```
+
+4. Configura las variables de entorno necesarias según la documentación de PocketBase y cualquier otra configuración requerida.
+
+## Ejecución
+
+Para iniciar el servidor de desarrollo, ejecuta:
 
 ```bash
 npm run dev
-# or
+# o
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abre [http://localhost:3000](http://localhost:3000) en tu navegador para ver la aplicación en acción.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Contribuciones
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Las contribuciones son bienvenidas. Si encuentras algún error o tienes ideas para nuevas funcionalidades, abre un **issue** o envía un **pull request**.
 
-## Learn More
+## Licencia
 
-To learn more about Next.js, take a look at the following resources:
+Este proyecto se distribuye bajo la **Licencia MIT**.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Agradecimientos
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **PocketBase** por ser la solución backend.
+- **Next.js** por su robustez y facilidad de uso.
+- A todos los contribuidores y usuarios que ayudan a mejorar este proyecto.
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Este README ofrece una visión general completa del proyecto y sirve tanto para nuevos colaboradores como para usuarios interesados en probar la aplicación. Puedes ajustarlo y ampliarlo según evolucionen las funcionalidades o necesidades de tu proyecto.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+¡Espero que te sea útil! 😊
+
