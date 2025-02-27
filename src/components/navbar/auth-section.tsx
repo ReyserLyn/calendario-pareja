@@ -15,8 +15,9 @@ import EditActions from "./edit-actions";
 interface AuthSectionProps {
   isAuthenticated: boolean;
   isDialogOpen: boolean;
-  setIsDialogOpen: (open: boolean) => void;
+  setIsDialogOpen: (isOpen: boolean) => void;
   isEditing: boolean;
+  isLoading?: boolean;
   onLogout: () => void;
   onLogin: () => void;
   onStartEditing: () => void;
@@ -29,6 +30,7 @@ export default function AuthSection({
   isDialogOpen,
   setIsDialogOpen,
   isEditing,
+  isLoading = false,
   onLogout,
   onLogin,
   onStartEditing,
@@ -41,6 +43,7 @@ export default function AuthSection({
         <UserDropdown onLogout={onLogout} />
         <EditActions
           isEditing={isEditing}
+          isLoading={isLoading}
           onStartEditing={onStartEditing}
           onSaveChanges={onSaveChanges}
           onCancelChanges={onCancelChanges}

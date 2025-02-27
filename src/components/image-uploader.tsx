@@ -1,4 +1,5 @@
 "use client";
+
 import {
   Form,
   FormControl,
@@ -16,40 +17,39 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { Button } from "./ui/button";
 
-export const ImageUploader: React.FC<{
-  sessionId: string;
-  month: string;
+const formSchema = z.object({
+  image: z
+    .instanceof(File)
+    .refine((file) => file.size > 0, "Por favor, sube una imagen"),
+});
+
+type FormDataType = z.infer<typeof formSchema>;
+
+interface ImageUploaderProps {
   onSuccess: (imageUrl: string) => void;
   className?: string;
-}> = ({ onSuccess, className }) => {
+}
+
+export const ImageUploader: React.FC<ImageUploaderProps> = ({
+  onSuccess,
+  className,
+}) => {
   const [preview, setPreview] = React.useState<string | ArrayBuffer | null>("");
 
-  const formSchema = z.object({
-    image: z
-      .instanceof(File)
-      .refine((file) => file.size !== 0, "Please upload an image"),
-  });
-
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormDataType>({
     resolver: zodResolver(formSchema),
     mode: "onBlur",
-    defaultValues: {
-      image: new File([""], "filename"),
-    },
   });
 
   const onDrop = React.useCallback(
     (acceptedFiles: File[]) => {
+      if (acceptedFiles.length === 0) return;
+      const file = acceptedFiles[0];
       const reader = new FileReader();
-      try {
-        reader.onload = () => setPreview(reader.result);
-        reader.readAsDataURL(acceptedFiles[0]);
-        form.setValue("image", acceptedFiles[0]);
-        form.clearErrors("image");
-      } catch {
-        setPreview(null);
-        form.resetField("image");
-      }
+      reader.onload = () => setPreview(reader.result);
+      reader.readAsDataURL(file);
+      form.setValue("image", file);
+      form.clearErrors("image");
     },
     [form]
   );
@@ -62,14 +62,15 @@ export const ImageUploader: React.FC<{
       accept: { "image/png": [], "image/jpg": [], "image/jpeg": [] },
     });
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (values: FormDataType) => {
     try {
+      // Se genera una URL temporal para la imagen subida
       const imageUrl = URL.createObjectURL(values.image);
       onSuccess(imageUrl);
       toast.success("Imagen cargada temporalmente");
     } catch (error) {
-      toast.error("Error al cargar la imagen");
       console.error("Upload error:", error);
+      toast.error("Error al cargar la imagen");
     }
   };
 
@@ -94,7 +95,7 @@ export const ImageUploader: React.FC<{
                       <div className="max-h-[300px] max-w-full overflow-hidden">
                         <Image
                           src={preview}
-                          alt="Uploaded image"
+                          alt="Uploaded image preview"
                           width={0}
                           height={0}
                           sizes="(max-width: 768px) 100vw, 400px"

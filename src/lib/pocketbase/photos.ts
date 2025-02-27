@@ -5,12 +5,18 @@ import type {
 import { pocketbaseClient } from "./client";
 
 // Obtener fotos de una sesión
-export async function getPhotos(sessionId: string): Promise<PhotosResponse[]> {
+export async function getPhotos(
+  sessionId: string,
+  timestamp?: string
+): Promise<PhotosResponse[]> {
   try {
+    const requestKey = timestamp || `photos_${new Date().getTime()}`;
     return await pocketbaseClient.pb
       .collection("photos")
       .getFullList<PhotosResponse>({
         filter: `session = "${sessionId}"`,
+        requestKey,
+        fields: "*",
       });
   } catch (error) {
     console.error("Error al obtener fotos:", error);
@@ -28,7 +34,10 @@ export async function uploadPhoto(
     const existing = await pocketbaseClient.pb
       .collection("photos")
       .getFirstListItem<PhotosResponse>(
-        `month="${month}" && session="${sessionId}"`
+        `month="${month}" && session="${sessionId}"`,
+        {
+          requestKey: `find_${month}_${new Date().getTime()}`,
+        }
       )
       .catch(() => null);
 
@@ -61,9 +70,11 @@ export async function deletePhoto(
     const existing = await pocketbaseClient.pb
       .collection("photos")
       .getFirstListItem<PhotosResponse>(
-        `month="${month}" && session="${sessionId}"`
+        `month="${month}" && session="${sessionId}"`,
+        {
+          requestKey: `delete_${month}_${new Date().getTime()}`,
+        }
       );
-
     await pocketbaseClient.pb.collection("photos").delete(existing.id);
     return true;
   } catch (error) {

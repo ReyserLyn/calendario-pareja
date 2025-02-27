@@ -35,6 +35,7 @@ export default function RootLayout({
   return (
     <html lang="es" suppressHydrationWarning>
       <body
+        suppressHydrationWarning
         className={`${roboto.variable} ${playfairDisplay.variable} ${dancingScript.variable} antialiased flex flex-col max-h-screen w-full`}
       >
         <ThemeProvider

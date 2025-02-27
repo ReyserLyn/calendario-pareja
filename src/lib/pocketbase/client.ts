@@ -16,6 +16,8 @@ class PocketBaseClient {
 
     try {
       this.pb = new PocketBase(pocketbaseUrl) as TypedPocketBase;
+
+      this.pb.autoCancellation(false);
     } catch (error) {
       console.error("Failed to initialize PocketBase client:", error);
       throw error;

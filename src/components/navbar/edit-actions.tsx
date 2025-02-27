@@ -2,10 +2,11 @@
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { FaEdit, FaSave, FaTimes } from "react-icons/fa";
+import { FaEdit, FaSave, FaSpinner, FaTimes } from "react-icons/fa";
 
 interface EditActionsProps {
   isEditing: boolean;
+  isLoading?: boolean;
   onStartEditing: () => void;
   onSaveChanges: () => void;
   onCancelChanges: () => void;
@@ -13,6 +14,7 @@ interface EditActionsProps {
 
 export default function EditActions({
   isEditing,
+  isLoading = false,
   onStartEditing,
   onSaveChanges,
   onCancelChanges,
@@ -27,8 +29,14 @@ export default function EditActions({
         )}
         size="sm"
         onClick={isEditing ? onSaveChanges : onStartEditing}
+        disabled={isLoading}
       >
-        {isEditing ? (
+        {isLoading ? (
+          <>
+            <FaSpinner className="h-4 w-4" />
+            <span className="hidden sm:inline">Guardando...</span>
+          </>
+        ) : isEditing ? (
           <>
             <FaSave className="h-5 w-5" />
             <span className="hidden sm:inline">Guardar</span>
@@ -46,6 +54,7 @@ export default function EditActions({
           onClick={onCancelChanges}
           className="gap-2"
           size="sm"
+          disabled={isLoading}
         >
           <FaTimes className="h-4 w-4" />
           <span className="hidden sm:inline">Cancelar</span>

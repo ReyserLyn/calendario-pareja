@@ -21,14 +21,10 @@ import {
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 export function ResponsiveDialog({
-  sessionId,
-  month,
   onSuccess,
   isOpen,
   setIsOpen,
 }: {
-  sessionId: string;
-  month: string;
   onSuccess: (imageUrl: string) => void;
   isOpen?: boolean;
   setIsOpen?: () => void;
@@ -48,12 +44,7 @@ export function ResponsiveDialog({
               Selecciona una imagen para subirla al álbum.
             </DialogDescription>
           </DialogHeader>
-          <ImageUploader
-            sessionId={sessionId}
-            month={month}
-            onSuccess={onSuccess}
-            className="space-y-4"
-          />
+          <ImageUploader onSuccess={onSuccess} className="space-y-4" />
         </DialogContent>
       </Dialog>
     );
@@ -71,12 +62,7 @@ export function ResponsiveDialog({
             Selecciona una imagen para subirla al álbum.
           </DrawerDescription>
         </DrawerHeader>
-        <ImageUploader
-          sessionId={sessionId}
-          month={month}
-          onSuccess={onSuccess}
-          className="px-4 space-y-4"
-        />
+        <ImageUploader onSuccess={onSuccess} className="px-4 space-y-4" />
         <DrawerFooter className="pt-2">
           <DrawerClose asChild>
             <Button variant="outline">Cancelar</Button>
