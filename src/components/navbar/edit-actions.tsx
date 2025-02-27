@@ -33,7 +33,7 @@ export default function EditActions({
       >
         {isLoading ? (
           <>
-            <FaSpinner className="h-4 w-4" />
+            <FaSpinner className="h-4 w-4 animate-spin" />
             <span className="hidden sm:inline">Guardando...</span>
           </>
         ) : isEditing ? (
