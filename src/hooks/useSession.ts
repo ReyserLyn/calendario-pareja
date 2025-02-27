@@ -13,7 +13,8 @@ interface SessionState {
 
 export const useSession = (): SessionState => {
   const params = useParams();
-  const sessionId = (params?.sessionId as string) || "0d5tth946j9me9c";
+  const sessionIdFromParams =
+    (params?.sessionId as string) || process.env.NEXT_PUBLIC_DEFAULT_SESSION_ID;
 
   const [state, setState] = useState<SessionState>({
     sessionId: null,
@@ -23,10 +24,20 @@ export const useSession = (): SessionState => {
   });
 
   useEffect(() => {
+    // Si no hay sessionId en la URL, marcamos error
+    if (!sessionIdFromParams) {
+      setState({
+        sessionId: null,
+        sessionName: null,
+        isLoading: false,
+        isError: true,
+      });
+      return;
+    }
+
     const loadSession = async () => {
       try {
-        const session = await getSession(sessionId);
-
+        const session = await getSession(sessionIdFromParams);
         if (!session) {
           setState({
             sessionId: null,
@@ -36,7 +47,6 @@ export const useSession = (): SessionState => {
           });
           return;
         }
-
         setState({
           sessionId: session.id,
           sessionName: session.name,
@@ -55,7 +65,7 @@ export const useSession = (): SessionState => {
     };
 
     loadSession();
-  }, [sessionId]);
+  }, [sessionIdFromParams]);
 
   return state;
 };
