@@ -39,7 +39,7 @@
    ```bash
    cd album-marirey
    ```
-   
+
 3. Instala las dependencias:
 
    ```bash
@@ -81,4 +81,3 @@ Este proyecto se distribuye bajo la **Licencia MIT**.
 Este README ofrece una visión general completa del proyecto y sirve tanto para nuevos colaboradores como para usuarios interesados en probar la aplicación. Puedes ajustarlo y ampliarlo según evolucionen las funcionalidades o necesidades de tu proyecto.
 
 ¡Espero que te sea útil! 😊
-
