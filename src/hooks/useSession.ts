@@ -1,6 +1,6 @@
 "use client";
 
-import { getSession } from "@/lib/pocketbase/sessions";
+import { getSession } from "@/lib/pocketbase";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
