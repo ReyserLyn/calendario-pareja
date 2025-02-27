@@ -6,7 +6,7 @@ import { useEditing } from "@/context/editing-context";
 import { usePhotosContext } from "@/context/photos-context";
 import { useUploadModal } from "@/hooks/useUploadModal";
 
-export default function Home() {
+export default function HomePage() {
   const { isEditing } = useEditing();
   const { photos, isLoading, updatePhoto } = usePhotosContext();
   const { selectedMonth, handleUploadSuccess, setSelectedMonth } =
