@@ -6,9 +6,10 @@ import { notFound } from "next/navigation";
 export default async function SessionPage({
   params,
 }: {
-  params: { sessionId: string };
+  params: Promise<{ sessionId: string }>;
 }) {
-  const { sessionId } = await Promise.resolve(params);
+  const resolvedParams = await params;
+  const { sessionId } = resolvedParams;
   const session = await getSession(sessionId);
   if (!session) notFound();
 
