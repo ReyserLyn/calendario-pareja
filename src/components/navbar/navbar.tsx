@@ -3,7 +3,7 @@
 import { useEditing } from "@/context/editing-context";
 import { usePhotosContext } from "@/context/photos-context";
 import { useAuth } from "@/hooks/useAuth";
-import { useSession } from "@/hooks/useSessions";
+import { useSession } from "@/hooks/useSession";
 import { uploadPhotos } from "@/lib/uploadPhotos";
 import { PhotosMonthOptions } from "@/types/pocketbase-types";
 import Image from "next/image";

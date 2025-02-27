@@ -1,4 +1,3 @@
-import MainLayout from "@/components/main-layout";
 import { ThemeProvider } from "@/components/theme-provider";
 import { EditingProvider } from "@/context/editing-context";
 import type { Metadata } from "next";
@@ -37,8 +36,7 @@ export default function RootLayout({
   return (
     <html lang="es" suppressHydrationWarning>
       <body
-        suppressHydrationWarning
-        className={`${roboto.variable} ${playfairDisplay.variable} ${dancingScript.variable} antialiased flex flex-col max-h-screen w-full`}
+        className={`${roboto.variable} ${playfairDisplay.variable} ${dancingScript.variable} antialiased`}
       >
         <ThemeProvider
           attribute="class"
@@ -47,7 +45,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <EditingProvider>
-            <MainLayout>{children}</MainLayout>
+            {children}
             <Toaster position="bottom-right" expand={false} richColors />
           </EditingProvider>
         </ThemeProvider>

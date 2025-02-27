@@ -1,7 +1,15 @@
-"use client";
+import AlbumSessionPage from "@/components/album-session-page";
+import MainLayout from "@/components/main-layout";
+import { getDefaultSession } from "@/lib/pocketbase/sessions";
+import { notFound } from "next/navigation";
 
-import AlbumSessionPage from "../[sessionId]/page";
+export default async function DefaultSessionPage() {
+  const session = await getDefaultSession();
+  if (!session) notFound();
 
-export default function HomePage() {
-  return <AlbumSessionPage />;
+  return (
+    <MainLayout sessionId={session.id} sessionName={session.name}>
+      <AlbumSessionPage />
+    </MainLayout>
+  );
 }

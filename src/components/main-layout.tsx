@@ -1,25 +1,25 @@
 "use client";
 
+import { Navbar } from "@/components/navbar/navbar";
 import { PhotosProvider } from "@/context/photos-context";
-import { useSession } from "@/hooks/useSessions";
-import { LoadingSpinner } from "./loading-spinner";
-import { Navbar } from "./navbar/navbar";
+
+interface MainLayoutProps {
+  children: React.ReactNode;
+  sessionId: string;
+  sessionName: string;
+}
 
 export default function MainLayout({
   children,
-}: {
-  children: React.ReactNode;
-}) {
-  const { sessionId, sessionName, isLoading, isError } = useSession();
-
-  if (isLoading) return <LoadingSpinner fullScreen />;
-  if (isError)
-    return <div className="p-4 text-center">Sesión no encontrada</div>;
-
+  sessionId,
+  sessionName,
+}: MainLayoutProps) {
   return (
-    <PhotosProvider sessionId={sessionId!} sessionName={sessionName!}>
-      <Navbar />
-      <main className="flex-1">{children}</main>
+    <PhotosProvider sessionId={sessionId} sessionName={sessionName}>
+      <div className="min-h-screen flex flex-col">
+        <Navbar />
+        <main className="flex-1">{children}</main>
+      </div>
     </PhotosProvider>
   );
 }
