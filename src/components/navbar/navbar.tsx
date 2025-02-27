@@ -14,7 +14,7 @@ import AuthSection from "./auth-section";
 import NavbarLoading from "./navbar-loading";
 
 export const Navbar: React.FC = () => {
-  const sessionId = useSession();
+  const { sessionId } = useSession();
   const {
     isAuthenticated,
     isLoading: isAuthLoading,

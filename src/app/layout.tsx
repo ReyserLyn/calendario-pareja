@@ -1,4 +1,6 @@
+import MainLayout from "@/components/main-layout";
 import { ThemeProvider } from "@/components/theme-provider";
+import { EditingProvider } from "@/context/editing-context";
 import type { Metadata } from "next";
 import { Dancing_Script, Playfair_Display, Roboto } from "next/font/google";
 import { Toaster } from "sonner";
@@ -24,14 +26,14 @@ const roboto = Roboto({
 
 export const metadata: Metadata = {
   title: "Calendario Pareja",
-  description: "Album calendario para fotos en pareja",
+  description: "Álbum calendario para fotos en pareja",
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="es" suppressHydrationWarning>
       <body
@@ -44,16 +46,10 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <div
-            className="absolute inset-0 -z-10 h-full w-full transition-colors duration-300"
-            style={{
-              backgroundImage:
-                "radial-gradient(var(--background-dot-color) 1px, transparent 1px)",
-              backgroundSize: "16px 16px",
-            }}
-          ></div>
-          {children}
-          <Toaster position="bottom-right" expand={false} richColors />
+          <EditingProvider>
+            <MainLayout>{children}</MainLayout>
+            <Toaster position="bottom-right" expand={false} richColors />
+          </EditingProvider>
         </ThemeProvider>
       </body>
     </html>
