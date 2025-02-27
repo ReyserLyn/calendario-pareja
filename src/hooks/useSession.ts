@@ -1,6 +1,5 @@
 "use client";
 
-import { DEFAULT_SESSION_ID } from "@/constants/constants";
 import { getSession } from "@/lib/pocketbase/sessions";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -14,7 +13,7 @@ interface SessionState {
 
 export const useSession = (): SessionState => {
   const params = useParams();
-  const sessionId = (params?.sessionId as string) || DEFAULT_SESSION_ID;
+  const sessionId = (params?.sessionId as string) || "0d5tth946j9me9c";
 
   const [state, setState] = useState<SessionState>({
     sessionId: null,

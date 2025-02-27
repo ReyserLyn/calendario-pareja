@@ -22,97 +22,41 @@ export async function getSession(
         return null;
       }
 
-      console.error("PocketBase error:", {
-        status: error.status,
-        message: error.message,
-        response: error.response || "No response",
-      });
+      console.error(
+        "PocketBase error:",
+        {
+          status: error.status,
+          message: error.message,
+          response: error.response || "No response",
+        },
+        process.env.NEXT_PUBLIC_POCKETBASE_URL,
+        process.env.NEXT_PUBLIC_DEFAULT_SESSION_ID
+      );
       return null;
     }
 
     return null;
-  }
-}
-
-//Valida si una sesión existe
-export async function validateSession(sessionId: string): Promise<boolean> {
-  try {
-    await getSession(sessionId);
-    return true;
-  } catch (error) {
-    console.error("Session validation failed:", error);
-    return false;
   }
 }
 
 // Obtiene la sesión por defecto sin lanzar error en caso de fallo
 export async function getDefaultSession(): Promise<SessionsResponse | null> {
   try {
-    const defaultSessionId = "0d5tth946j9me9c";
+    const defaultSessionId = process.env.NEXT_PUBLIC_DEFAULT_SESSION_ID;
+    if (!defaultSessionId) throw new Error("Missing default session ID");
+
     const session = await getSession(defaultSessionId);
     if (!session) {
-      console.warn("Default session not found");
+      console.warn(
+        "Default session not found",
+        defaultSessionId,
+        process.env.NEXT_PUBLIC_POCKETBASE_URL
+      );
       return null;
     }
     return session;
   } catch (error) {
     console.error("Error fetching default session:", error);
     return null;
-  }
-}
-
-// Busca una sesión por su nombre
-export async function getSessionByName(
-  name: string
-): Promise<SessionsResponse | null> {
-  try {
-    const result = await pocketbaseClient.pb
-      .collection("sessions")
-      .getFirstListItem<SessionsResponse>(`name="${name}"`, {
-        requestKey: `session_name_${name}_${new Date().getTime()}`,
-      });
-
-    return result;
-  } catch (error) {
-    if (error instanceof ClientResponseError && error.status === 404) {
-      return null;
-    }
-    throw error;
-  }
-}
-
-// Crea una nueva sesión
-export async function createSession(name: string): Promise<SessionsResponse> {
-  try {
-    const newSession = await pocketbaseClient.pb
-      .collection("sessions")
-      .create<SessionsResponse>(
-        { name },
-        {
-          requestKey: `create_session_${new Date().getTime()}`,
-        }
-      );
-
-    return newSession;
-  } catch (error) {
-    console.error("Error creating session:", error);
-    throw new Error("Failed to create session");
-  }
-}
-
-// Actualiza una sesión existente
-export async function updateSession(
-  sessionId: string,
-  data: Partial<SessionsResponse>
-): Promise<SessionsResponse> {
-  try {
-    return await pocketbaseClient.pb
-      .collection("sessions")
-      .update<SessionsResponse>(sessionId, data, {
-        requestKey: `update_session_${sessionId}_${new Date().getTime()}`,
-      });
-  } catch (error) {
-    console.error("Error updating session:", error);
-    throw new Error("Failed to update session");
   }
 }
