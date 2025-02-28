@@ -144,7 +144,7 @@ export default function RegisterModal({
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-4"
+            className="space-y-2"
             noValidate
           >
             <FormField
@@ -191,16 +191,6 @@ export default function RegisterModal({
             </Button>
           </form>
         </Form>
-
-        <div className="flex items-center gap-3 my-4">
-          <div className="flex-1 h-px bg-border" />
-          <span className="text-xs text-muted-foreground">O</span>
-          <div className="flex-1 h-px bg-border" />
-        </div>
-
-        <Button variant="outline" className="w-full">
-          Continuar con Google
-        </Button>
 
         <p className="text-center text-xs text-muted-foreground mt-4">
           Al registrarte, aceptas nuestros{" "}

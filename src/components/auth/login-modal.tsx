@@ -110,7 +110,7 @@ export default function LoginModal({ onLogin }: { onLogin: () => void }) {
         </div>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
             <FormField
               control={form.control}
               name="username"
@@ -140,16 +140,6 @@ export default function LoginModal({ onLogin }: { onLogin: () => void }) {
             </Button>
           </form>
         </Form>
-
-        <div className="flex items-center gap-3 my-4">
-          <div className="flex-1 h-px bg-border" />
-          <span className="text-xs text-muted-foreground">O</span>
-          <div className="flex-1 h-px bg-border" />
-        </div>
-
-        <Button variant="outline" className="w-full">
-          Continuar con Google
-        </Button>
 
         <p className="text-center text-xs text-muted-foreground mt-4">
           Al iniciar sesión, aceptas nuestros{" "}
