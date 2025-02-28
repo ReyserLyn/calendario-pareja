@@ -31,5 +31,15 @@ export function useAuth() {
     setIsAuthenticated(true);
   };
 
-  return { isAuthenticated, isLoading, handleLogout, handleLogin };
+  const handleRegister = () => {
+    setIsAuthenticated(true);
+  };
+
+  return {
+    isAuthenticated,
+    isLoading,
+    handleLogout,
+    handleLogin,
+    handleRegister,
+  };
 }

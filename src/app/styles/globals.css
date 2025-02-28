@@ -8,6 +8,7 @@ body {
 
 @layer base {
   :root {
+    --spacing: 0.3rem;
     --background: 0 0% 100%;
     --foreground: 20 14.3% 4.1%;
     --card: 0 0% 100%;
@@ -36,6 +37,7 @@ body {
     --background-dot-color: #e5e7eb;
   }
   .dark {
+    --spacing: 0.3rem;
     --background: 20 14.3% 4.1%;
     --foreground: 60 9.1% 97.8%;
     --card: 20 14.3% 4.1%;
@@ -109,5 +111,11 @@ body {
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@media (width >= 40rem) {
+  .sm\:max-w-100 {
+    max-width: calc(var(--spacing) * 100);
   }
 }

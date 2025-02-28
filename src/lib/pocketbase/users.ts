@@ -1,15 +1,32 @@
 import type { UsersRecord, UsersResponse } from "@/types/pocketbase-types";
+import { ClientResponseError } from "pocketbase";
 import { pocketbaseClient } from "./client";
 
-// Crear un nuevo usuario
 export async function createUser(data: UsersRecord): Promise<UsersResponse> {
   try {
     return await pocketbaseClient.pb.collection("users").create<UsersResponse>({
       ...data,
-      username: data.username?.toLowerCase(),
+      username: data.username.toLowerCase(),
+      email: data.email.toLowerCase(),
+      passwordConfirm: data.password,
+      emailVisibility: true,
     });
   } catch (error) {
-    throw new Error("Error al crear el usuario: " + error);
+    let errorMessage = "Error al crear el usuario";
+
+    if (error instanceof ClientResponseError) {
+      const fieldErrors = error.data.data;
+
+      if (fieldErrors?.username?.code === "validation_not_unique") {
+        errorMessage = "El nombre de usuario ya está registrado";
+      }
+
+      if (fieldErrors?.email?.code === "validation_not_unique") {
+        errorMessage = "El correo electrónico ya está en uso";
+      }
+    }
+
+    throw new Error(errorMessage);
   }
 }
 
@@ -25,7 +42,7 @@ export async function updateUser(
       .collection("users")
       .update<UsersResponse>(user.id, {
         ...data,
-        username: data.username?.toLowerCase(),
+        username: data.username,
       });
   } catch (error) {
     console.error("Error al actualizar el usuario:", error);

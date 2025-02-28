@@ -7,10 +7,10 @@ import { useSession } from "@/hooks/useSession";
 import { uploadPhotos } from "@/lib/uploadPhotos";
 import { PhotosMonthOptions } from "@/types/pocketbase-types";
 import Image from "next/image";
-import React, { useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import { toast } from "sonner";
+import AuthSection from "../auth/auth-section";
 import { ToggleTheme } from "../ui/toogle-theme";
-import AuthSection from "./auth-section";
 import NavbarLoading from "./navbar-loading";
 
 export const Navbar: React.FC = () => {
@@ -20,8 +20,8 @@ export const Navbar: React.FC = () => {
     isLoading: isAuthLoading,
     handleLogout,
     handleLogin,
+    handleRegister,
   } = useAuth();
-  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [isSaving, setIsSaving] = useState<boolean>(false);
 
   const {
@@ -38,7 +38,7 @@ export const Navbar: React.FC = () => {
     if (isSaving) return;
     try {
       setIsSaving(true);
-      if (!sessionId) throw new Error("No hay una sesión activa");
+      if (!sessionId) throw new Error("No hay sesión activa");
 
       // Guardar cambios en la base de datos
       await uploadPhotos(sessionId, temporalPhotos, deletedPhotos);
@@ -52,7 +52,7 @@ export const Navbar: React.FC = () => {
       await reloadPhotos();
       toast.success("Cambios guardados correctamente");
     } catch (error) {
-      console.error("Error al guardar los cambios:", error);
+      console.error("Error al guardar:", error);
       toast.error("Error al guardar los cambios");
     } finally {
       setIsSaving(false);
@@ -94,12 +94,11 @@ export const Navbar: React.FC = () => {
         <div className="flex items-center gap-2 sm:gap-4">
           <AuthSection
             isAuthenticated={isAuthenticated}
-            isDialogOpen={isDialogOpen}
-            setIsDialogOpen={setIsDialogOpen}
             isEditing={isEditing}
             isLoading={isSaving}
             onLogout={handleLogout}
             onLogin={handleLogin}
+            onRegister={handleRegister}
             onStartEditing={() => setIsEditing(true)}
             onSaveChanges={handleSaveChanges}
             onCancelChanges={handleCancelChanges}
