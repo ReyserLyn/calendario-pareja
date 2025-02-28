@@ -89,8 +89,9 @@ export const Navbar: React.FC = () => {
           width={100}
           height={32}
           priority
-          className="h-12 w-auto"
+          className="h-auto max-h-10 sm:max-h-14 w-auto"
         />
+
         <div className="flex items-center gap-2 sm:gap-4">
           <AuthSection
             isAuthenticated={isAuthenticated}
