@@ -100,13 +100,15 @@ export default function RegisterModal({
       );
 
       onRegister();
-    } catch (error: any) {
-      toast.error(error.message);
-      if (error.message.includes("usuario")) {
-        form.setError("username", { message: error.message });
-      }
-      if (error.message.includes("correo")) {
-        form.setError("email", { message: error.message });
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+        if (error.message.includes("usuario")) {
+          form.setError("username", { message: error.message });
+        }
+        if (error.message.includes("correo")) {
+          form.setError("email", { message: error.message });
+        }
       }
     } finally {
       setIsLoading(false);
