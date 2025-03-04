@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "db.reyserlyn.com",
+        hostname: "pb-calendario.reyserlyn.com",
       },
     ],
   },
